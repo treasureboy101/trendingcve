@@ -4,6 +4,9 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * *" # Runs every day at midnight (UTC)
+env:
+    GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
 
 jobs:
   scrape:
@@ -24,9 +27,6 @@ jobs:
           pip install chromedriver-autoinstaller selenium pyvirtualdisplay requests python-dotenv
 
       - name: Run Python Script
-        env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: python -u script.py
 
       - name: Commit and Push Changes
