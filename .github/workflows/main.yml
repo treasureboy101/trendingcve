@@ -1,0 +1,37 @@
+name: update cve_output.json
+on:
+  schedule:
+    - cron: "0 12 * * *" # Runs every day at midnight (UTC)
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup env variables
+        env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      - name: Checking out repo
+        uses: actions/checkout@v3
+
+      - name: Setting up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Installing necessary packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+          pip install chromedriver-autoinstaller selenium pyvirtualdisplay requests python-dotenv
+          
+      - name: Run the Python script
+        run: python script.py
+        
+      - name: Commit and Push The Results From Python Selenium Action
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "updated json file"
+          git push
