@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup env variables
+        run: 'echo "$SSH_KEY" > key'
+        shell: bash
         env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
