@@ -1,39 +1,37 @@
-name: update cve_output.json
+name: Update Trending JSON
+
 on:
   schedule:
-    - cron: "0 12 * * *" # Runs every day at midnight (UTC)
+    - cron: "0 0 * * *" # Runs every day at midnight (UTC)
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup env variables
-        run: 'echo "$SSH_KEY" > key'
-        shell: bash
-        env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-      - name: Checking out repo
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Setting up Python
-        uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
           python-version: '3.9'
 
-      - name: Installing necessary packages
+      - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser
           pip install chromedriver-autoinstaller selenium pyvirtualdisplay requests python-dotenv
-          
-      - name: Run the Python script
+
+      - name: Run Python Script
+        env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: python script.py
-        
-      - name: Commit and Push The Results From Python Selenium Action
+
+      - name: Commit and Push Changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "updated json file"
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add trending.json
+          git commit -m "Update Trending CVE"
           git push
