@@ -138,7 +138,7 @@ def github_count(cve,timea):
                 updated_repos_count += 1
     else:
         print("Github api cooldown ignore this error")
-        time.sleep(15)
+        time.sleep(30)
         response = requests.get(url, headers=headers, params=params)
         updated_repos_count = 0
         if response.status_code == 200:
